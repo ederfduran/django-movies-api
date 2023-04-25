@@ -29,3 +29,6 @@ apply migrations(create table)
 ```sh
 python3 manage.py migrate
 ```
+
+default user: **administrator**
+default pass: **changeme**
