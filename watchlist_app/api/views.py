@@ -7,16 +7,9 @@ from watchlist_app.models import WatchList, StreamPlatform, Review
 from watchlist_app.api.serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 
 
-class StreamPlatformVS(viewsets.ViewSet):
-    def list(self, request):
-        queryset = StreamPlatform.objects.all()
-        serializer = StreamPlatformSerializer(queryset, many=True)
-        return Response(serializer.data)
-    def retrieve(self, request, pk=None):
-        queryset = StreamPlatform.objects.all()
-        stream_platform = get_object_or_404(queryset, pk=pk)
-        serializer = StreamPlatformSerializer(stream_platform)
-        return Response(serializer.data)
+class StreamPlatformVS(viewsets.ModelViewSet):
+    queryset = StreamPlatform.objects.all()
+    serializer_class = StreamPlatformSerializer
 
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
