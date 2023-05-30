@@ -4,6 +4,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework import status, mixins, generics, viewsets
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+
 
 from watchlist_app.api.permissions import ReviewUserOrReadOnly, IsAdminOrReadOnly
 from watchlist_app.models import Movie, StreamPlatform, Review
@@ -50,6 +53,8 @@ class ReviewCreate(generics.CreateAPIView):
 class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
     throttle_classes = [ReviewListThrottle]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['review_user__username', 'active']
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         return Review.objects.filter(movie=pk)
@@ -60,6 +65,13 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [ReviewUserOrReadOnly]
 
 # -------------- movie View ----------------
+
+class MovieGV(generics.ListAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['avg_rating']
+
 
 class MovieAV(APIView):
     permission_classes = [IsAdminOrReadOnly]
